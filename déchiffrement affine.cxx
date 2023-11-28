@@ -1,4 +1,4 @@
-#include <iostream>
+ #include <iostream>
 #include <string>
 
 // Fonction pour calculer l'inverse modulaire de a modulo m
@@ -15,6 +15,16 @@ int mod_inverse(int a, int m) {
     }
 
     return x1 + m0 * (x1 < 0 ? 1 : 0);
+}
+
+// Fonction pour calculer le plus grand commun diviseur (PGCD) de deux nombres 'a' et 'b'
+int gcd(int a, int b) {
+    while (b != 0) {
+        int temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
 }
 
 // Fonction de déchiffrement affine
@@ -45,18 +55,18 @@ int main() {
 
     // Demander à l'utilisateur d'entrer les paramètres de la clé
     int a, b;
-    
+
     do {
         std::cout << "Entrez la première partie de la clé (a) : ";
         std::cin >> a;
 
         // Valider que 'a' est premier avec 26
-        if (mod_inverse(a, 26) != 1) {
-            std::cout << "Erreur : a n'est pas premier avec 26. Veuillez recommencer.\n";
+        if (gcd(a, 26) != 1) {
+            std::cout << "Erreur : a doit être premier avec 26. Veuillez recommencer.\n";
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
-    } while (mod_inverse(a, 26) != 1);
+    } while (gcd(a, 26) != 1);
 
     std::cout << "Entrez la deuxième partie de la clé (b) : ";
     std::cin >> b;
@@ -67,3 +77,4 @@ int main() {
 
     return 0;
 }
+   
