@@ -1,8 +1,8 @@
 #include <iostream>
 #include <string>
 
+// Fonction pour calculer l'inverse modulaire de a modulo m
 int mod_inverse(int a, int m) {
-    // Fonction pour calculer l'inverse modulaire de a modulo m
     int m0 = m, x0 = 0, x1 = 1;
 
     while (a > 1) {
@@ -17,8 +17,8 @@ int mod_inverse(int a, int m) {
     return x1 + m0 * (x1 < 0 ? 1 : 0);
 }
 
+// Fonction de déchiffrement affine
 std::string decrypt_affine_cipher(const std::string& ciphertext, int a, int b) {
-    // Fonction de déchiffrement affine
     std::string decrypted_text = "";
     int m = 26;  // Taille de l'alphabet (pour l'anglais)
     int a_inv = mod_inverse(a, m);
@@ -45,8 +45,19 @@ int main() {
 
     // Demander à l'utilisateur d'entrer les paramètres de la clé
     int a, b;
-    std::cout << "Entrez la première partie de la clé (a) : ";
-    std::cin >> a;
+    
+    do {
+        std::cout << "Entrez la première partie de la clé (a) : ";
+        std::cin >> a;
+
+        // Valider que 'a' est premier avec 26
+        if (mod_inverse(a, 26) != 1) {
+            std::cout << "Erreur : a n'est pas premier avec 26. Veuillez recommencer.\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+    } while (mod_inverse(a, 26) != 1);
+
     std::cout << "Entrez la deuxième partie de la clé (b) : ";
     std::cin >> b;
 
