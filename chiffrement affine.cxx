@@ -1,8 +1,8 @@
 #include <iostream>
 #include <string>
+#include <cmath>
 
 int mod_inverse(int a, int m) {
-    // Fonction pour calculer l'inverse modulaire de a modulo m
     int m0 = m, x0 = 0, x1 = 1;
 
     while (a > 1) {
@@ -17,18 +17,28 @@ int mod_inverse(int a, int m) {
     return x1 + m0 * (x1 < 0 ? 1 : 0);
 }
 
+int gcd(int a, int b) {
+    while (b != 0) {
+        int temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+bool are_coprime(int a, int b) {
+    return gcd(a, b) == 1;
+}
+
 std::string encrypt_affine_cipher(const std::string& plaintext, int a, int b) {
-    // Fonction de chiffrement affine
     std::string encrypted_text = "";
-    int m = 26;  // Taille de l'alphabet (pour l'anglais)
+    int m = 26;
 
     for (char c : plaintext) {
         if (std::isalpha(c)) {
-            // Chiffrement de la lettre
             char encrypted_char = ((a * (c - 'A') + b) % m + m) % m + 'A';
             encrypted_text += encrypted_char;
         } else {
-            // Ne touche pas aux caractères non alphabétiques
             encrypted_text += c;
         }
     }
@@ -37,19 +47,25 @@ std::string encrypt_affine_cipher(const std::string& plaintext, int a, int b) {
 }
 
 int main() {
-    // Demander à l'utilisateur d'entrer le message
     std::cout << "Entrez le message à chiffrer (en majuscules) : ";
     std::string plaintext;
     std::getline(std::cin, plaintext);
 
-    // Demander à l'utilisateur d'entrer les paramètres de la clé
     int a, b;
-    std::cout << "Entrez la première partie de la clé (a) : ";
-    std::cin >> a;
+    do {
+        std::cout << "Entrez la première partie de la clé (a) : ";
+        std::cin >> a;
+
+        if (!are_coprime(a, 26)) {
+            std::cout << "Erreur : a n'est pas premier avec 26. Veuillez recommencer.\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+    } while (!are_coprime(a, 26));
+
     std::cout << "Entrez la deuxième partie de la clé (b) : ";
     std::cin >> b;
 
-    // Chiffrer le message et afficher le résultat
     std::string encrypted_text = encrypt_affine_cipher(plaintext, a, b);
     std::cout << "Texte chiffré : " << encrypted_text << std::endl;
 
